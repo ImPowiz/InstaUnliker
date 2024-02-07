@@ -50,16 +50,16 @@ class Unliker():
     def followerFilter(self, post):
         return post['user']['username'] in self.following
 
-    def dogFilter(self, post):
+    def animeFilter(self, post):
         user = post['user']['username']
         if post['caption']:
             caption = post['caption']['text']
-            return 'dog' in caption or 'dog' in user or 'corg' in caption or 'corg' in user
+            return 'anime' in caption or 'anime' in user
         else:
             return False
 
 
-    def unlike(self, filters=[followerFilter], max_remove = 40):
+    def unlike(self, filters=[animeFilter], max_remove = 40):
         removed = 0
 
         while removed < max_remove:
@@ -70,7 +70,7 @@ class Unliker():
             for p in liked['items']:
                 post_id = p['id']
 
-                if not any([f(p) for f in filters]):
+                if any([f(p) for f in filters]):
                     print('Deleted', post_id, 'by', p['user']['username'])
                     self.api.delete_like(post_id)
                     removed += 1
@@ -95,4 +95,4 @@ class Unliker():
 
 
 unliker = Unliker()
-unliker.unlike([unliker.followerFilter, unliker.dogFilter], 40 if len(sys.argv) <= 3 else int(sys.argv[3]))
+unliker.unlike([unliker.followerFilter, unliker.animeFilter], 40 if len(sys.argv) <= 3 else int(sys.argv[3]))
